@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymelieaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Список товаров</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Список товаров</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+
+
+        <form sec:authorize="isAuthenticated()" class="mr-2" th:action="@{/logout}" method="post">
+            <button type="button" class="btn btn-dark"> Выйти </button>
+        </form>
+        <div sec:authorize="isAnonymous()" class="form-inline my-2 my-lg-0">
+            <a class="btn btn-secondary" th:href="@{/login}"> Логин </a> <!-- @{/login} - ссылочку мы обрабатываем именно так, чтобы она отображалазь правильно-->
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <form method="post" th:action="@{/}" th:object="${item}"> <!-- th - чтобы thymleaf мог пользоваться, а @{/} - отправлять на корневой url нашего приложения
+    ${item}} - параметры и модели из контроллера, смотри имено в indexPage-->
+        <div class="input-group mb-3 mt-3">
+            <input type="text" th:field="*{name}"class="form-control" placeholder="Наименование товара" aria-label="Наименование товара" aria-describedby="basic-addon2"> <!--th:field="*{name}" - благодаря звёздочке можем напрямую обратиться к полям объекта item -->
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Добавить</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Название</th>
+            <th scope="col">Стоимость</th>
+            <th scope="col">Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Чтобы размножить тег делается следующее, сделали своеобразный цикл for для создания новых строк в таблице-->
+        <tr th:each = "item : ${items}">
+            <!-- Чтобы поля заполнились соответствующими значениями прописываем параметр-->
+            <th scope="row" th:text="${item.order_number}" th:utext="${item.order_number}">1</th>
+            <td th:text="${item.name}">Мясо</td>
+            <td th:text="${item.name}">Мясо</td>
+
+            <td>
+                <form th:action="@{/{id}(id = ${item.id})}" th:method = "delete">
+                    <button type="submit" class="btn btn-outline-danger">Удалить</button>
+                </form> <!-- В скобках записываем значение этого параметра -->
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
