@@ -26,28 +26,4 @@ public class LoginController {
         return "login";
     }
 
-    // Отображает форму для ввода информации
-    @GetMapping("/register")
-    public String registerPage(Model model){
-        model.addAttribute("user", new UserReprisentation()); // добавляем пользователя в виде атрибута, внутри создаём класс
-        return "register";
-    }
-
-    // Метод, который обрабатывает эту самую информацию
-    @PostMapping("/register")
-    public String registerNewUser(@Valid UserReprisentation userReprisentation, BindingResult bindingResult){ // Последний параметр валидация (будет возвращаться информация о том, как была провалидирована информация из полей в userRepresentation на основании полей из userRepresentation)
-        if(bindingResult.hasErrors()){ // проверка, всё ли было хорошо при валидации
-            return "register";
-        }
-        if(!userReprisentation.getPassword().equals(userReprisentation.getRepeatPassword())){ // Проверяем равенство паролей
-            bindingResult.rejectValue("password","", "Пароли не совпадают");
-            return "register";
-        }
-
-        // После успешной валдиации создаём пользователя и возвращаемся на строницу login
-        userService.create(userReprisentation);
-        return "redirect:/login";
-    }
-
-
 }
