@@ -1,4 +1,4 @@
-package com.neferdevelop.shoppinglist.security;
+package com.neferdevelop.shoppinglist.service;
 
 import com.neferdevelop.shoppinglist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,22 +12,22 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
-public class UserAuthService implements UserDetailsService {
-    private final UserRepository userRepository; // нужен доступ в бд
+public class UserAuthenticationService implements UserDetailsService {
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserAuthService(UserRepository userRepository) {
+    public UserAuthenticationService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @Override // Проверит, есть ли такой пользователь в бд, если нет, то мы кинем исключение
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .map(user -> new User(
                         user.getUsername(),
                         user.getPassword(),
-                        Collections.singletonList(new SimpleGrantedAuthority("USER")) // Здесь прописываем роли
-                )) // С помощью метода map из optional преобразуем во что=то ещё
+                        Collections.singletonList(new SimpleGrantedAuthority("USER"))
+                ))
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 }
