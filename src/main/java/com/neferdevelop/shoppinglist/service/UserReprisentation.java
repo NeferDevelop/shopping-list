@@ -2,11 +2,16 @@ package com.neferdevelop.shoppinglist.service;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-// Это тот же класс user, только в нём мы будем работать с формой для регистрации register.html, так как там присутствует дополнительное поле
-public class UserReprisentation {
+import java.util.Arrays;
+import java.util.Collection;
+
+public class UserReprisentation implements UserDetails {
     private Long userId;
-    @NotBlank // Поле обязательно должно быть заполнено
+    @NotBlank
     private String username;
     @NotBlank
     private String password;
@@ -43,5 +48,30 @@ public class UserReprisentation {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
